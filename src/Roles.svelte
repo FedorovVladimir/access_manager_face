@@ -1,6 +1,9 @@
 <script>
     import {deleteFetch, getFetch, postFetch} from "./main";
 
+    export let selectedPage;
+    export let roleCode;
+
     let roles = []
 
     let code = ""
@@ -60,7 +63,7 @@
                             <td>{r.code}</td>
                             <td>{r.name}</td>
                             <td style="text-align: center">
-                                <span class="text-info">
+                                <span class="text-info" on:click={() => {selectedPage = "role"; roleCode = r.code}}>
                                     <svg class="bi bi-info-circle" fill="currentColor" height="20"
                                          viewBox="0 0 20 20"
                                          width="20" xmlns="http://www.w3.org/2000/svg">
