@@ -1,6 +1,8 @@
 <script>
     import {getFetch, postFetch} from "./main";
 
+    export let login;
+    export let password;
     export let selectedPage;
     export let roleCode;
 
@@ -11,18 +13,18 @@
     let permissions = []
 
     async function loadRoles() {
-        roles = await getFetch("/roles")
+        roles = await getFetch("/roles", login, password)
         console.log(roles)
 
     }
 
     async function loadFunctions() {
-        functions = await getFetch("/functions")
+        functions = await getFetch("/functions", login, password)
         console.log(functions)
     }
 
     async function changePermission(uuid) {
-        await postFetch("/permissions/" + uuid + "/change")
+        await postFetch("/permissions/" + uuid + "/change", login, password)
         await loadRoles()
     }
 

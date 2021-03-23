@@ -17,7 +17,7 @@ function trimPrefix(str, prefix) {
     }
 }
 
-export async function getFetch(url, login, password,) {
+export async function getFetch(url, login, password) {
     let response = await fetch(baseUrl + trimPrefix(url, "/"), {
         headers: {
             "Content-Type": "application/json",
@@ -39,7 +39,7 @@ export async function postFetch(url, login, password, data) {
     return response.json();
 }
 
-export async function deleteFetch(url, login, password,) {
+export async function deleteFetch(url, login, password) {
     let response = await fetch(baseUrl + trimPrefix(url, "/"), {
         method: 'DELETE',
         headers: {

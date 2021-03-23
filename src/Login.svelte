@@ -6,11 +6,7 @@
     export let password;
 
     async function serverLogin() {
-        let body = {
-            "login": login,
-            "password": password
-        }
-        let resp = postFetch("/login", body)
+        let resp = await postFetch("/login", login, password)
         if (resp.data === "ok") {
             loginIn = true
         }

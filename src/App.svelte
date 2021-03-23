@@ -28,19 +28,19 @@
         {/if}
 
         {#if selectedPage === "roles"}
-            <Roles bind:selectedPage="{selectedPage}" bind:roleCode="{roleCode}"/>
+            <Roles login={login} password={password} bind:selectedPage="{selectedPage}" bind:roleCode="{roleCode}"/>
         {/if}
 
         {#if selectedPage === "functions"}
-            <Functions/>
+            <Functions login={login} password={password}/>
         {/if}
 
         {#if selectedPage === "permissions"}
-            <Permissions bind:selectedPage="{selectedPage}" bind:roleCode="{roleCode}"/>
+            <Permissions login={login} password={password} bind:selectedPage="{selectedPage}" bind:roleCode="{roleCode}"/>
         {/if}
 
         {#if selectedPage === "role"}
-            <Role roleCode="{roleCode}"/>
+            <Role login={login} password={password} roleCode="{roleCode}"/>
         {/if}
     {:else}
         <Login bind:loginIn="{loginIn}" bind:login={login} bind:password={password}/>

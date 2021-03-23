@@ -1,6 +1,9 @@
 <script>
     import {deleteFetch, getFetch, postFetch} from "./main";
 
+    export let login;
+    export let password;
+
     let functions = []
 
     let code = ""
@@ -8,7 +11,7 @@
     let name = ""
 
     async function loadFunctions() {
-        functions = await getFetch("/functions")
+        functions = await getFetch("/functions", login, password)
         console.log(functions)
     }
 
@@ -17,14 +20,14 @@
             "code": code,
             "name": name
         }
-        await postFetch("/functions", role)
+        await postFetch("/functions", login, password, role)
         await loadFunctions()
         code = ""
         name = ""
     }
 
     async function deleteFunction(code) {
-        await deleteFetch("/functions/" + code)
+        await deleteFetch("/functions/" + code, login, password)
         await loadFunctions()
     }
 

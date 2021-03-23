@@ -1,6 +1,8 @@
 <script>
     import {getFetch, postFetch} from "./main";
 
+    export let login;
+    export let password;
     export let roleCode;
 
     let role = {
@@ -8,13 +10,13 @@
     }
 
     async function loadRole() {
-        role = await getFetch("/roles/" + roleCode)
+        role = await getFetch("/roles/" + roleCode, login, password)
         console.log(role)
         console.log(role.permissions)
     }
 
     async function changePermission(uuid) {
-        await postFetch("/permissions/" + uuid + "/change")
+        await postFetch("/permissions/" + uuid + "/change", login, password)
         await loadRole()
     }
 

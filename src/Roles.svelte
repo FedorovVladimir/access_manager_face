@@ -1,6 +1,8 @@
 <script>
     import {deleteFetch, getFetch, postFetch} from "./main";
 
+    export let login;
+    export let password;
     export let selectedPage;
     export let roleCode;
 
@@ -11,7 +13,7 @@
     let name = ""
 
     async function loadRoles() {
-        roles = await getFetch("/roles")
+        roles = await getFetch("/roles", login, password)
         console.log(roles)
     }
 
@@ -20,14 +22,14 @@
             "code": code,
             "name": name
         }
-        await postFetch("/roles", role)
+        await postFetch("/roles", login, password, role)
         await loadRoles()
         code = ""
         name = ""
     }
 
     async function deleteRole(code) {
-        await deleteFetch("/roles/" + code)
+        await deleteFetch("/roles/" + code, login, password)
         await loadRoles()
     }
 
