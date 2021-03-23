@@ -11,7 +11,7 @@
     let name = ""
 
     async function loadRoles() {
-        roles = await getFetch("http://localhost:8080/roles")
+        roles = await getFetch("/roles")
         console.log(roles)
     }
 
@@ -20,14 +20,14 @@
             "code": code,
             "name": name
         }
-        await postFetch("http://localhost:8080/roles", role)
+        await postFetch("/roles", role)
         await loadRoles()
         code = ""
         name = ""
     }
 
     async function deleteRole(code) {
-        await deleteFetch("http://localhost:8080/roles/" + code)
+        await deleteFetch("/roles/" + code)
         await loadRoles()
     }
 

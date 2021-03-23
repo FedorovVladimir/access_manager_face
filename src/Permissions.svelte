@@ -11,18 +11,18 @@
     let permissions = []
 
     async function loadRoles() {
-        roles = await getFetch("http://localhost:8080/roles")
+        roles = await getFetch("/roles")
         console.log(roles)
 
     }
 
     async function loadFunctions() {
-        functions = await getFetch("http://localhost:8080/functions")
+        functions = await getFetch("/functions")
         console.log(functions)
     }
 
     async function changePermission(uuid) {
-        await postFetch("http://localhost:8080/permissions/" + uuid + "/change")
+        await postFetch("/permissions/" + uuid + "/change")
         await loadRoles()
     }
 

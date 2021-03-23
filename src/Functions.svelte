@@ -8,7 +8,7 @@
     let name = ""
 
     async function loadFunctions() {
-        functions = await getFetch("http://localhost:8080/functions")
+        functions = await getFetch("/functions")
         console.log(functions)
     }
 
@@ -17,14 +17,14 @@
             "code": code,
             "name": name
         }
-        await postFetch("http://localhost:8080/functions", role)
+        await postFetch("/functions", role)
         await loadFunctions()
         code = ""
         name = ""
     }
 
     async function deleteFunction(code) {
-        await deleteFetch("http://localhost:8080/functions/" + code)
+        await deleteFetch("/functions/" + code)
         await loadFunctions()
     }
 
