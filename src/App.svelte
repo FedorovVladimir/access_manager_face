@@ -5,33 +5,44 @@
     import Functions from "./Functions.svelte";
     import Permissions from "./Permissions.svelte";
     import Role from "./Role.svelte";
+    import Login from "./Login.svelte";
 
     let selectedPage = "home"
 
     let roleCode = ""
 
+    let loginIn = false
+
+    let login = ""
+
+    let password = ""
+
 </script>
 
 <main>
-    <Menu bind:selectedPage="{selectedPage}"/>
+    {#if loginIn}
+        <Menu bind:selectedPage="{selectedPage}"/>
 
-    {#if selectedPage === "home"}
-        <Home/>
-    {/if}
+        {#if selectedPage === "home"}
+            <Home/>
+        {/if}
 
-    {#if selectedPage === "roles"}
-        <Roles bind:selectedPage="{selectedPage}" bind:roleCode="{roleCode}"/>
-    {/if}
+        {#if selectedPage === "roles"}
+            <Roles bind:selectedPage="{selectedPage}" bind:roleCode="{roleCode}"/>
+        {/if}
 
-    {#if selectedPage === "functions"}
-        <Functions/>
-    {/if}
+        {#if selectedPage === "functions"}
+            <Functions/>
+        {/if}
 
-    {#if selectedPage === "permissions"}
-        <Permissions bind:selectedPage="{selectedPage}" bind:roleCode="{roleCode}"/>
-    {/if}
+        {#if selectedPage === "permissions"}
+            <Permissions bind:selectedPage="{selectedPage}" bind:roleCode="{roleCode}"/>
+        {/if}
 
-    {#if selectedPage === "role"}
-        <Role roleCode="{roleCode}"/>
+        {#if selectedPage === "role"}
+            <Role roleCode="{roleCode}"/>
+        {/if}
+    {:else}
+        <Login bind:loginIn="{loginIn}" bind:login={login} bind:password={password}/>
     {/if}
 </main>
