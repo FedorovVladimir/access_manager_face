@@ -23,15 +23,15 @@
         <Roles bind:selectedPage="{selectedPage}" bind:roleCode="{roleCode}"/>
     {/if}
 
-    {#if selectedPage === "role"}
-        <Role roleCode="{roleCode}"/>
-    {/if}
-
     {#if selectedPage === "functions"}
         <Functions/>
     {/if}
 
     {#if selectedPage === "permissions"}
-        <Permissions/>
+        <Permissions bind:selectedPage="{selectedPage}" bind:roleCode="{roleCode}"/>
+    {/if}
+
+    {#if selectedPage === "role"}
+        <Role roleCode="{roleCode}"/>
     {/if}
 </main>

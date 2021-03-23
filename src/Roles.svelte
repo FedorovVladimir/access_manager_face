@@ -13,7 +13,6 @@
     async function loadRoles() {
         roles = await getFetch("http://localhost:8080/roles")
         console.log(roles)
-
     }
 
     async function addRole() {

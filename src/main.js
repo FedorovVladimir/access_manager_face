@@ -28,12 +28,13 @@ export async function postFetch(url, data) {
     return response.json();
 }
 
-export async function deleteFetch(url, data) {
-    await fetch(url, {
+export async function deleteFetch(url) {
+    let response = await fetch(url, {
         method: 'DELETE',
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Basic " + btoa("admin:admin")
         },
     });
+    return response.json();
 }
