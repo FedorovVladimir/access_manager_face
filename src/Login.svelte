@@ -16,9 +16,9 @@
 <main>
     <div class="container mt-5">
         <div class="row">
-            <div class="col-2">
+            <div class="col-4">
             </div>
-            <div class="col-8">
+            <div class="col-4">
 
                 <h1>Вход</h1>
 
@@ -35,7 +35,7 @@
                 <button class="btn btn-secondary mb-5" id="send" on:click={serverLogin}>Вход</button>
 
             </div>
-            <div class="col-2">
+            <div class="col-4">
             </div>
         </div>
     </div>
