@@ -7,38 +7,81 @@
     export let selectedPage;
     export let roleCode;
 
+    // table
     let roles = []
 
+    // fields
     let code = ""
-
     let name = ""
 
+    let deleteItemCode = ""
+
+    let hasError = false
+    let errorMessage = ""
+
+    let loadRolesTable = false
+    let loadRoleOnServer = false
+
     async function loadRoles() {
+        loadRolesTable = false
         roles = await getFetch("/roles", login, password)
         console.log(roles)
+        loadRolesTable = true
     }
 
-    let load = false
+    function validRoleForm() {
+        if (code === "") {
+            errorMessage = "Поле код не может быть пустым"
+            hasError = true
+            return false
+        }
+        if (name === "") {
+            errorMessage = "Поле название не может быть пустым"
+            hasError = true
+            return false
+        }
+        hasError = false
+        return true;
+    }
 
     async function addRole() {
-        load = true
+        if (!validRoleForm()) {
+            return
+        }
+
+        loadRoleOnServer = true
+
         let role = {
             "code": code,
             "name": name
         }
-        await postFetch("/roles", login, password, role)
+        let r = await postFetch("/roles", login, password, role)
+        if (r.message !== undefined) {
+            hasError = true
+            errorMessage = r.message
+        }
         await loadRoles()
         code = ""
         name = ""
-        load = false
+        loadRoleOnServer = false
     }
 
     async function deleteRole(code) {
         await deleteFetch("/roles/" + code, login, password)
+        hiddenDeleteModalWindow = true
         await loadRoles()
     }
 
+    function openDeleteWindow(code) {
+        console.log(deleteItemCode)
+        deleteItemCode = code
+        console.log(deleteItemCode)
+        hiddenDeleteModalWindow = false
+    }
+
     loadRoles()
+
+    let hiddenDeleteModalWindow = true
 </script>
 
 <main>
@@ -52,23 +95,24 @@
 
                 <h3 class="mt-5 mb-3">Таблица ролей</h3>
 
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">№</th>
-                        <th scope="col">Код</th>
-                        <th scope="col">Название</th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {#each roles as r, i}
+                {#if loadRolesTable}
+                    <table class="table">
+                        <thead>
                         <tr>
-                            <th scope="row">{i + 1}</th>
-                            <td>{r.code}</td>
-                            <td>{r.name}</td>
-                            <td style="text-align: center">
+                            <th scope="col">№</th>
+                            <th scope="col">Код</th>
+                            <th scope="col">Название</th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {#each roles as r, i}
+                            <tr>
+                                <th scope="row">{i + 1}</th>
+                                <td>{r.code}</td>
+                                <td>{r.name}</td>
+                                <td style="text-align: center">
                                 <span class="text-info" on:click={() => {selectedPage = "role"; roleCode = r.code}}>
                                     <svg class="bi bi-info-circle" fill="currentColor" height="20"
                                          viewBox="0 0 20 20"
@@ -77,9 +121,9 @@
                                         <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
                                     </svg>
                                 </span>
-                            </td>
-                            <td style="text-align: center">
-                                    <span class="text-danger" on:click="{() => deleteRole(r.code)}">
+                                </td>
+                                <td style="text-align: center">
+                                    <span class="text-danger" on:click="{() => openDeleteWindow(r.code)}">
                                         <svg class="bi bi-trash" fill="currentColor" height="20" viewBox="0 0 20 20"
                                              width="20" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
@@ -87,13 +131,25 @@
                                                   fill-rule="evenodd"/>
                                         </svg>
                                     </span>
-                            </td>
-                        </tr>
-                    {/each}
-                    </tbody>
-                </table>
+                                </td>
+                            </tr>
+                        {/each}
+                        </tbody>
+                    </table>
+                    {#if roles.length === 0}
+                        <p>Ролей пока нет</p>
+                    {/if}
+                {:else}
+                    <p>Загрузка...</p>
+                {/if}
 
                 <h3 class="mt-5 mb-3">Добавить роль</h3>
+
+                {#if hasError}
+                    <div class="alert alert-dark" role="alert">
+                        {errorMessage}
+                    </div>
+                {/if}
 
                 <form>
                     <div class="mb-3">
@@ -105,11 +161,20 @@
                         <input bind:value={name} class="form-control" id="name" required type="text">
                     </div>
                 </form>
-                <CrabsButton bind:load={load} text="Создать роль" on:click={addRole}/>
+                <CrabsButton bind:load={loadRoleOnServer} text="Создать роль" on:click={addRole}/>
 
             </div>
             <div class="col-2">
             </div>
+
+            <div class="myModalBg" hidden="{hiddenDeleteModalWindow}">
+                <div class="myModal">
+                    <p>Вы уверены?</p>
+                    <button class="myModalButton" on:click={() => {hiddenDeleteModalWindow = true}}>Нет</button>
+                    <button class="myModalButton" on:click={deleteRole(deleteItemCode)}>Да</button>
+                </div>
+            </div>
+
         </div>
     </div>
 </main>
@@ -117,5 +182,37 @@
 <style>
     span {
         cursor: pointer;
+    }
+
+    .myModalBg {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(0,0,0,0.3);
+    }
+
+    .myModal {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: #ffffff;
+        width: 300px;
+        height: 150px;
+        margin: auto;
+        padding: 30px;
+    }
+
+    .myModalButton {
+        padding: 10px 20px 12px 20px;
+        margin: 5px 5px 30px 5px;
+        border: 0;
+        border-radius: 0;
+        background: #666666;
+        color: #f4f4f4;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
     }
 </style>

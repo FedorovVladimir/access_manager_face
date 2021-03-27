@@ -7,7 +7,6 @@ const app = new App({
 export default app;
 
 // let baseUrl = window.location.href
-let baseUrl = "http://localhost:8080/"
 
 function trimPrefix(str, prefix) {
     if (str.startsWith(prefix)) {
@@ -18,6 +17,7 @@ function trimPrefix(str, prefix) {
 }
 
 export async function getFetch(url, login, password) {
+    let baseUrl = "http://localhost:8080/"
     let response = await fetch(baseUrl + trimPrefix(url, "/"), {
         headers: {
             "Content-Type": "application/json",
@@ -28,18 +28,22 @@ export async function getFetch(url, login, password) {
 }
 
 export async function postFetch(url, login, password, data) {
+    let baseUrl = "http://localhost:8080/"
+    let b = JSON.stringify(data)
+    console.log(b)
     let response = await fetch(baseUrl + trimPrefix(url, "/"), {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Basic " + btoa(login + ":" + password)
         },
-        body: JSON.stringify(data)
+        body: b
     });
     return response.json();
 }
 
 export async function deleteFetch(url, login, password) {
+    let baseUrl = "http://localhost:8080/"
     let response = await fetch(baseUrl + trimPrefix(url, "/"), {
         method: 'DELETE',
         headers: {
