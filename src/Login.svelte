@@ -1,15 +1,26 @@
 <script>
     import {postFetch} from "./main";
+    import CrabsButton from "./components/CrabsButton.svelte";
 
     export let loginIn;
     export let login;
     export let password;
 
+    let load = false
+    let badLogin = false
+
     async function serverLogin() {
-        let resp = await postFetch("/login", login, password)
-        if (resp.data === "ok") {
-            loginIn = true
+        load = true
+        try {
+            badLogin = false
+            let resp = await postFetch("/login", login, password)
+            if (resp.data === "ok") {
+                loginIn = true
+            }
+        } catch (_) {
+            badLogin = true
         }
+        load = false
     }
 </script>
 
@@ -22,6 +33,10 @@
 
                 <h1>Вход</h1>
 
+                {#if badLogin}
+                    <p>Неверны логин или пароль</p>
+                {/if}
+
                 <form>
                     <div class="mb-3">
                         <label class="form-label" for="login">Логин <span class="text-danger">*</span></label>
@@ -32,7 +47,7 @@
                         <input bind:value={password} class="form-control" id="password" required type="password">
                     </div>
                 </form>
-                <button class="btn btn-secondary mb-5" id="send" on:click={serverLogin}>Вход</button>
+                <CrabsButton bind:load={load} text="Вход" on:click={serverLogin}/>
 
             </div>
             <div class="col-4">

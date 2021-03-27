@@ -1,5 +1,6 @@
 <script>
     import {deleteFetch, getFetch, postFetch} from "./main";
+    import CrabsButton from "./components/CrabsButton.svelte";
 
     export let login;
     export let password;
@@ -17,7 +18,10 @@
         console.log(roles)
     }
 
+    let load = false
+
     async function addRole() {
+        load = true
         let role = {
             "code": code,
             "name": name
@@ -26,6 +30,7 @@
         await loadRoles()
         code = ""
         name = ""
+        load = false
     }
 
     async function deleteRole(code) {
@@ -100,7 +105,7 @@
                         <input bind:value={name} class="form-control" id="name" required type="text">
                     </div>
                 </form>
-                <button class="btn btn-secondary mb-5" id="send" on:click={addRole}>Создать роль</button>
+                <CrabsButton bind:load={load} text="Создать роль" on:click={addRole}/>
 
             </div>
             <div class="col-2">
