@@ -1,6 +1,7 @@
 <script>
     import {deleteFetch, getFetch, postFetch} from "./main";
     import CrabsButton from "./components/CrabsButton.svelte";
+    import CrabsDialogYesNo from "./components/CrabsDialogYesNo.svelte";
 
     export let login;
     export let password;
@@ -68,7 +69,7 @@
 
     async function deleteRole(code) {
         await deleteFetch("/roles/" + code, login, password)
-        hiddenDeleteModalWindow = true
+        isHiddenDeleteModalWindow = true
         await loadRoles()
     }
 
@@ -76,12 +77,12 @@
         console.log(deleteItemCode)
         deleteItemCode = code
         console.log(deleteItemCode)
-        hiddenDeleteModalWindow = false
+        isHiddenDeleteModalWindow = false
     }
 
     loadRoles()
 
-    let hiddenDeleteModalWindow = true
+    let isHiddenDeleteModalWindow = true
 </script>
 
 <main>
@@ -113,7 +114,7 @@
                                 <td>{r.code}</td>
                                 <td>{r.name}</td>
                                 <td style="text-align: center">
-                                <span class="text-info" on:click={() => {selectedPage = "role"; roleCode = r.code}}>
+                                <span class="text-info icons" on:click={() => {selectedPage = "role"; roleCode = r.code}}>
                                     <svg class="bi bi-info-circle" fill="currentColor" height="20"
                                          viewBox="0 0 20 20"
                                          width="20" xmlns="http://www.w3.org/2000/svg">
@@ -123,7 +124,7 @@
                                 </span>
                                 </td>
                                 <td style="text-align: center">
-                                    <span class="text-danger" on:click="{() => openDeleteWindow(r.code)}">
+                                    <span class="text-danger icons" on:click="{() => openDeleteWindow(r.code)}">
                                         <svg class="bi bi-trash" fill="currentColor" height="20" viewBox="0 0 20 20"
                                              width="20" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
@@ -167,52 +168,18 @@
             <div class="col-2">
             </div>
 
-            <div class="myModalBg" hidden="{hiddenDeleteModalWindow}">
-                <div class="myModal">
-                    <p>Вы уверены?</p>
-                    <button class="myModalButton" on:click={() => {hiddenDeleteModalWindow = true}}>Нет</button>
-                    <button class="myModalButton" on:click={deleteRole(deleteItemCode)}>Да</button>
-                </div>
-            </div>
+            <CrabsDialogYesNo text="Вы уверены?" bind:isHidden={isHiddenDeleteModalWindow} deleteItemCode={deleteItemCode} deleteRole={deleteRole}/>
 
         </div>
     </div>
 </main>
 
 <style>
-    span {
+    .icons {
         cursor: pointer;
+        opacity: 0.5;
     }
-
-    .myModalBg {
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background-color: rgba(0,0,0,0.3);
-    }
-
-    .myModal {
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background-color: #ffffff;
-        width: 300px;
-        height: 150px;
-        margin: auto;
-        padding: 30px;
-    }
-
-    .myModalButton {
-        padding: 10px 20px 12px 20px;
-        margin: 5px 5px 30px 5px;
-        border: 0;
-        border-radius: 0;
-        background: #666666;
-        color: #f4f4f4;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    span:hover {
+        opacity: 1;
     }
 </style>
