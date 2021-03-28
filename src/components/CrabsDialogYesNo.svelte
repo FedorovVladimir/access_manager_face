@@ -2,8 +2,8 @@
     import CrabsButton from "./CrabsButton.svelte";
     export let text;
     export let isHidden;
-    export let deleteItemCode;
-    export let deleteRole;
+    export let itemCode;
+    export let functionOnYes;
 </script>
 
 <main>
@@ -11,7 +11,7 @@
         <div class="myModal">
             <p>{text}</p>
             <CrabsButton text="Нет" on:click={() => {isHidden = true}}/>
-            <CrabsButton text="Да" on:click={deleteRole(deleteItemCode)}/>
+            <CrabsButton text="Да" on:click={functionOnYes(itemCode)}/>
         </div>
     </div>
 </main>

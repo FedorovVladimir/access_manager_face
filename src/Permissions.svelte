@@ -1,5 +1,7 @@
 <script>
     import {getFetch, postFetch} from "./main";
+    import CrabsIconInfo from "./components/CrabsIconInfo.svelte";
+    import CrabsDialogYesNo from "./components/CrabsDialogYesNo.svelte";
 
     export let login;
     export let password;
@@ -12,20 +14,37 @@
 
     let permissions = []
 
+    let loadRolesTable = false
+    let loadFunctionsTable = false
+
+    let isHiddenChangeModalWindow = true
+    let itemCode = ""
+
     async function loadRoles() {
+        loadRolesTable = false
         roles = await getFetch("/roles", login, password)
         console.log(roles)
-
+        loadRolesTable = true
     }
 
     async function loadFunctions() {
+        loadFunctionsTable = false
         functions = await getFetch("/functions", login, password)
         console.log(functions)
+        loadFunctionsTable = true
     }
 
     async function changePermission(uuid) {
         await postFetch("/permissions/" + uuid + "/change", login, password)
+        isHiddenChangeModalWindow = true
         await loadRoles()
+    }
+
+    function openChangePermissionWindow(code) {
+        console.log(itemCode)
+        itemCode = code
+        console.log(itemCode)
+        isHiddenChangeModalWindow = false
     }
 
     loadRoles()
@@ -43,32 +62,27 @@
 
                 <h3 class="mt-5 mb-3">Таблица разрешений</h3>
 
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th class="v-middle" scope="col">?:)</th>
-                        <th class="v-middle" scope="col">Роль</th>
-                        {#each functions as f}
-                            <th class="v-middle" scope="col" style="text-align: center">{f.name}</th>
-                        {/each}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {#each roles as r}
+                {#if loadRolesTable && loadFunctionsTable}
+                    <table class="table">
+                        <thead>
                         <tr>
-                            <td class="v-middle">
-                                <span class="text-info" on:click={() => {selectedPage = "role"; roleCode = r.code}}>
-                                    <svg class="bi bi-info-circle" fill="currentColor" height="20" viewBox="0 0 20 20"
-                                         width="20" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                                        <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
-                                    </svg>
-                                </span>
-                            </td>
-                            <td class="v-middle">{r.name}</td>
-                            {#each r.permissions as p}
-                                <td class="v-middle" style="text-align: center">
-                                    <span style="cursor: pointer" on:click={() => {changePermission(p.uuid)}}>
+                            <th class="v-middle" scope="col">?:)</th>
+                            <th class="v-middle" scope="col">Роль</th>
+                            {#each functions as f}
+                                <th class="v-middle" scope="col" style="text-align: center">{f.name}</th>
+                            {/each}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {#each roles as r}
+                            <tr>
+                                <td class="v-middle">
+                                    <CrabsIconInfo on:click={() => {selectedPage = "role"; roleCode = r.code}}/>
+                                </td>
+                                <td class="v-middle">{r.name}</td>
+                                {#each r.permissions as p}
+                                    <td class="v-middle" style="text-align: center">
+                                    <span style="cursor: pointer" on:click={() => {openChangePermissionWindow(p.uuid)}}>
                                         {#if p.has}
                                             <span class="text-success">
                                                 <svg class="bi bi-check2-circle" fill="currentColor" height="20"
@@ -88,16 +102,22 @@
                                             </span>
                                         {/if}
                                     </span>
-                                </td>
-                            {/each}
-                        </tr>
-                    {/each}
-                    </tbody>
-                </table>
+                                    </td>
+                                {/each}
+                            </tr>
+                        {/each}
+                        </tbody>
+                    </table>
+                {:else}
+                    <p>Загрузка...</p>
+                {/if}
 
             </div>
             <div class="col-1">
             </div>
+
+            <CrabsDialogYesNo text="Вы уверены?" bind:isHidden={isHiddenChangeModalWindow} itemCode={itemCode} functionOnYes={changePermission}/>
+
         </div>
     </div>
 </main>

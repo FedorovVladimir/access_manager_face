@@ -7,7 +7,8 @@
     import Role from "./Role.svelte";
     import Login from "./Login.svelte";
 
-    let selectedPage = "functions"
+    // let selectedPage = "home" // prod
+    let selectedPage = "permissions" // dev
 
     let roleCode = ""
 

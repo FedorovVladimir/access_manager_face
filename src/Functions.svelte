@@ -150,7 +150,7 @@
             <div class="col-2">
             </div>
 
-            <CrabsDialogYesNo text="Вы уверены?" bind:isHidden={isHiddenDeleteModalWindow} deleteItemCode={deleteItemCode} deleteRole={deleteFunction}/>
+            <CrabsDialogYesNo text="Вы уверены?" bind:isHidden={isHiddenDeleteModalWindow} itemCode={deleteItemCode} functionOnYes={deleteFunction}/>
 
         </div>
     </div>
