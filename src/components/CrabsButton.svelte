@@ -3,18 +3,16 @@
     export let load;
 </script>
 
-<main>
-    {#if load}
-        <button on:click>
-            <span class="hig spinner"></span>
-            <div class="text">{text}</div>
-        </button>
-    {:else}
-        <button on:click>
-            <div class="hig">{text}</div>
-        </button>
-    {/if}
-</main>
+{#if load}
+    <button on:click>
+        <span class="hig spinner"></span>
+        <div class="text">{text}</div>
+    </button>
+{:else}
+    <button on:click>
+        <div class="hig">{text}</div>
+    </button>
+{/if}
 
 <style>
 

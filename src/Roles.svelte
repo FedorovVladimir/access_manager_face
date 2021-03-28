@@ -4,6 +4,7 @@
     import CrabsDialogYesNo from "./components/CrabsDialogYesNo.svelte";
     import CrabsIconInfo from "./components/CrabsIconInfo.svelte";
     import CrabsIconDelete from "./components/CrabsIconDelete.svelte";
+    import CrabsStar from "./components/CrabsStar.svelte";
 
     export let login;
     export let password;
@@ -142,11 +143,11 @@
 
                 <form>
                     <div class="mb-3">
-                        <label class="form-label" for="code">Код <span class="text-danger">*</span></label>
+                        <label class="form-label" for="code">Код <CrabsStar/></label>
                         <input bind:value={code} class="form-control" id="code" required type="text">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="name">Название <span class="text-danger">*</span></label>
+                        <label class="form-label" for="name">Название <CrabsStar/></label>
                         <input bind:value={name} class="form-control" id="name" required type="text">
                     </div>
                 </form>

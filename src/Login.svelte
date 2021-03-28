@@ -1,6 +1,7 @@
 <script>
     import {postFetch} from "./main";
     import CrabsButton from "./components/CrabsButton.svelte";
+    import CrabsStar from "./components/CrabsStar.svelte";
 
     export let loginIn;
     export let login;
@@ -39,11 +40,11 @@
 
                 <form>
                     <div class="mb-3">
-                        <label class="form-label" for="login">Логин <span class="text-danger">*</span></label>
+                        <label class="form-label" for="login">Логин <CrabsStar/></label>
                         <input bind:value={login} class="form-control" id="login" required type="text">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="password">Пароль <span class="text-danger">*</span></label>
+                        <label class="form-label" for="password">Пароль <CrabsStar/></label>
                         <input bind:value={password} class="form-control" id="password" required type="password">
                     </div>
                 </form>
