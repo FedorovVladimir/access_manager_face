@@ -7,13 +7,13 @@
     import Role from "./Role.svelte";
     import Login from "./Login.svelte";
 
-    // let selectedPage = "home" // prod
-    let selectedPage = "permissions" // dev
+    let selectedPage = "home" // prod
+    // let selectedPage = "permissions" // dev
 
     let roleCode = ""
 
-    // let loginIn = false // prod
-    let loginIn = true // dev
+    let loginIn = false // prod
+    // let loginIn = true // dev
 
     let login = "admin"
 
