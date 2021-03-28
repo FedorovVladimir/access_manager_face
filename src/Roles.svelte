@@ -25,6 +25,8 @@
     let loadRolesTable = false
     let loadRoleOnServer = false
 
+    let isHiddenDeleteModalWindow = true
+
     async function loadRoles() {
         loadRolesTable = false
         roles = await getFetch("/roles", login, password)
@@ -83,8 +85,6 @@
     }
 
     loadRoles()
-
-    let isHiddenDeleteModalWindow = true
 </script>
 
 <main>

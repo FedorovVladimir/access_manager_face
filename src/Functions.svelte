@@ -1,34 +1,84 @@
 <script>
     import {deleteFetch, getFetch, postFetch} from "./main";
+    import CrabsButton from "./components/CrabsButton.svelte";
+    import CrabsDialogYesNo from "./components/CrabsDialogYesNo.svelte";
+    import CrabsIconDelete from "./components/CrabsIconDelete.svelte";
 
     export let login;
     export let password;
 
+    // table
     let functions = []
 
+    // fields
     let code = ""
-
     let name = ""
 
+    let deleteItemCode = ""
+
+    let hasError = false
+    let errorMessage = ""
+
+    let loadFunctionsTable = false
+    let loadFunctionOnServer = false
+
+    let isHiddenDeleteModalWindow = true
+
     async function loadFunctions() {
+        loadFunctionsTable = false
         functions = await getFetch("/functions", login, password)
         console.log(functions)
+        loadFunctionsTable = true
+    }
+
+    function validFunctionForm() {
+        if (code === "") {
+            errorMessage = "Поле код не может быть пустым"
+            hasError = true
+            return false
+        }
+        if (name === "") {
+            errorMessage = "Поле название не может быть пустым"
+            hasError = true
+            return false
+        }
+        hasError = false
+        return true;
     }
 
     async function addFunction() {
+        if (!validFunctionForm()) {
+            return
+        }
+
+        loadFunctionOnServer = true
+
         let role = {
             "code": code,
             "name": name
         }
-        await postFetch("/functions", login, password, role)
+        let r = await postFetch("/functions", login, password, role)
+        if (r.message !== undefined) {
+            hasError = true
+            errorMessage = r.message
+        }
         await loadFunctions()
         code = ""
         name = ""
+        loadFunctionOnServer = false
     }
 
     async function deleteFunction(code) {
         await deleteFetch("/functions/" + code, login, password)
+        isHiddenDeleteModalWindow = true
         await loadFunctions()
+    }
+
+    function openDeleteWindow(code) {
+        console.log(deleteItemCode)
+        deleteItemCode = code
+        console.log(deleteItemCode)
+        isHiddenDeleteModalWindow = false
     }
 
     loadFunctions()
@@ -45,38 +95,43 @@
 
                 <h3 class="mt-5 mb-3">Таблица функций</h3>
 
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">№</th>
-                        <th scope="col">Код</th>
-                        <th scope="col">Название</th>
-                        <th scope="col"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {#each functions as f, i}
+                {#if loadFunctionsTable}
+                    <table class="table">
+                        <thead>
                         <tr>
-                            <th scope="row">{i + 1}</th>
-                            <td>{f.code}</td>
-                            <td>{f.name}</td>
-                            <td style="text-align: center">
-                                <span class="text-danger" style="cursor: pointer"
-                                      on:click="{() => deleteFunction(f.code)}">
-                                    <svg class="bi bi-trash" fill="currentColor" height="20" viewBox="0 0 20 20"
-                                         width="20" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
-                                              fill-rule="evenodd"/>
-                                    </svg>
-                                </span>
-                            </td>
+                            <th scope="col">№</th>
+                            <th scope="col">Код</th>
+                            <th scope="col">Название</th>
+                            <th scope="col"></th>
                         </tr>
-                    {/each}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        {#each functions as f, i}
+                            <tr>
+                                <th scope="row">{i + 1}</th>
+                                <td>{f.code}</td>
+                                <td>{f.name}</td>
+                                <td style="text-align: center">
+                                    <CrabsIconDelete on:click="{() => openDeleteWindow(f.code)}"/>
+                                </td>
+                            </tr>
+                        {/each}
+                        </tbody>
+                    </table>
+                    {#if functions.length === 0}
+                        <p>Функций пока нет</p>
+                    {/if}
+                {:else}
+                    <p>Загрузка...</p>
+                {/if}
 
                 <h3 class="mt-5 mb-3">Добавить функцию</h3>
+
+                {#if hasError}
+                    <div class="alert alert-dark" role="alert">
+                        {errorMessage}
+                    </div>
+                {/if}
 
                 <form>
                     <div class="mb-3">
@@ -88,11 +143,14 @@
                         <input bind:value={name} class="form-control" id="name" required type="text">
                     </div>
                 </form>
-                <button class="btn btn-secondary mb-5" id="send" on:click={addFunction}>Создать функцию</button>
+                <CrabsButton bind:load={loadFunctionOnServer} text="Создать функцию" on:click={addFunction}/>
 
             </div>
             <div class="col-2">
             </div>
+
+            <CrabsDialogYesNo text="Вы уверены?" bind:isHidden={isHiddenDeleteModalWindow} deleteItemCode={deleteItemCode} deleteRole={deleteFunction}/>
+
         </div>
     </div>
 </main>
