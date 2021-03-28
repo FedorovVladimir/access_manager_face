@@ -1,9 +1,13 @@
 <script>
     import {getFetch, postFetch} from "./main";
+    import CrabsDialogYesNo from "./components/CrabsDialogYesNo.svelte";
 
     export let login;
     export let password;
     export let roleCode;
+
+    let isHiddenChangeModalWindow = true
+    let itemCode = ""
 
     let role = {
         permissions: []
@@ -17,7 +21,15 @@
 
     async function changePermission(uuid) {
         await postFetch("/permissions/" + uuid + "/change", login, password)
+        isHiddenChangeModalWindow = true
         await loadRole()
+    }
+
+    function openChangePermissionWindow(code) {
+        console.log(itemCode)
+        itemCode = code
+        console.log(itemCode)
+        isHiddenChangeModalWindow = false
     }
 
     loadRole()
@@ -48,7 +60,7 @@
                             <td>{i + 1}</td>
                             <td>{p.function.name} ({p.function.code})</td>
                             <td style="text-align: center">
-                            <span style="cursor: pointer"  on:click={() => {changePermission(p.uuid)}}>
+                            <span style="cursor: pointer" on:click={() => {openChangePermissionWindow(p.uuid)}}>
                                 {#if p.has}
                                     <span class="text-success">
                                         <svg class="bi bi-check2-circle" fill="currentColor" height="20"
@@ -77,6 +89,9 @@
             </div>
             <div class="col-2">
             </div>
+
+            <CrabsDialogYesNo text="Вы уверены?" bind:isHidden={isHiddenChangeModalWindow} itemCode={itemCode} functionOnYes={changePermission}/>
+
         </div>
     </div>
 </main>
