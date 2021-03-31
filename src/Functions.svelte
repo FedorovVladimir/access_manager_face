@@ -28,7 +28,6 @@
     async function loadFunctions() {
         loadFunctionsTable = false
         functions = await getFetch("/functions", login, password)
-        console.log(functions)
         loadFunctionsTable = true
     }
 
@@ -76,9 +75,7 @@
     }
 
     function openDeleteWindow(code) {
-        console.log(deleteItemCode)
         deleteItemCode = code
-        console.log(deleteItemCode)
         isHiddenDeleteModalWindow = false
     }
 

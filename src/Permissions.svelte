@@ -23,14 +23,12 @@
     async function loadRoles() {
         loadRolesTable = false
         roles = await getFetch("/roles", login, password)
-        console.log(roles)
         loadRolesTable = true
     }
 
     async function loadFunctions() {
         loadFunctionsTable = false
         functions = await getFetch("/functions", login, password)
-        console.log(functions)
         loadFunctionsTable = true
     }
 
@@ -41,9 +39,7 @@
     }
 
     function openChangePermissionWindow(code) {
-        console.log(itemCode)
         itemCode = code
-        console.log(itemCode)
         isHiddenChangeModalWindow = false
     }
 

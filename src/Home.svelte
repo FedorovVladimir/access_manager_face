@@ -1,3 +1,31 @@
+<script>
+    import CrabsButton from "./components/CrabsButton.svelte";
+    import {getFetch, postFetch} from "./main";
+
+    export let login;
+    export let password;
+
+    let message = ""
+    let loadGetData = false
+    let loadSetData = false
+
+    async function getDataInBuffer() {
+        loadGetData = true
+        let data = await getFetch("/data", login, password)
+        await navigator.clipboard.writeText(JSON.stringify(data))
+        message = "Данные скопированы в буфер обмена"
+        loadGetData = false
+    }
+
+    async function setDataFromBuffer() {
+        loadSetData = true
+        let data = await navigator.clipboard.readText()
+        data = JSON.parse(data)
+        await postFetch("/data", login, password, data)
+        message = "Данные загружены из буфера обмена"
+        loadSetData = false
+    }
+</script>
 <main>
     <div class="container mt-5">
         <div class="row">
@@ -22,8 +50,18 @@
                     открыт/закрыт
                     для любой из <i>ролей</i>.</p>
 
-                <p><b>Разрешение (permission)</b> - возможность/невозможность пользования <i>функцией</i> для <i>роли</i>.
+                <p><b>Разрешение (permission)</b> - возможность/невозможность пользования <i>функцией</i> для
+                    <i>роли</i>.
                 </p>
+
+                <h3 class="mt-5 mb-3">Синхронизация</h3>
+                <p>1) Нажмите кнопку "Скачать" на исходном сервере с эталонной схемой данных.</p>
+                <p>2) Нажмите кнопку "Загрузить" на целевом сервере.</p>
+                <p>{message}</p>
+                <CrabsButton bind:load={loadGetData} on:click={getDataInBuffer} text="Скачать"/>
+                <CrabsButton bind:load={loadSetData} on:click={setDataFromBuffer} text="Загрузить"/>
+
+                <h3 class="mt-5 mb-3">Конец</h3>
             </div>
             <div class="col-2">
             </div>

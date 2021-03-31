@@ -31,7 +31,6 @@
     async function loadRoles() {
         loadRolesTable = false
         roles = await getFetch("/roles", login, password)
-        console.log(roles)
         loadRolesTable = true
     }
 
@@ -79,9 +78,7 @@
     }
 
     function openDeleteWindow(code) {
-        console.log(deleteItemCode)
         deleteItemCode = code
-        console.log(deleteItemCode)
         isHiddenDeleteModalWindow = false
     }
 

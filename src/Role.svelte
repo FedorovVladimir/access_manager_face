@@ -15,8 +15,6 @@
 
     async function loadRole() {
         role = await getFetch("/roles/" + roleCode, login, password)
-        console.log(role)
-        console.log(role.permissions)
     }
 
     async function changePermission(uuid) {
@@ -26,9 +24,7 @@
     }
 
     function openChangePermissionWindow(code) {
-        console.log(itemCode)
         itemCode = code
-        console.log(itemCode)
         isHiddenChangeModalWindow = false
     }
 
