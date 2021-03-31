@@ -1,6 +1,7 @@
 <script>
     import CrabsButton from "./components/CrabsButton.svelte";
     import {getFetch, postFetch} from "./main";
+    import CrabsDialogYesNo from "./components/CrabsDialogYesNo.svelte";
 
     export let login;
     export let password;
@@ -8,6 +9,7 @@
     let message = ""
     let loadGetData = false
     let loadSetData = false
+    let isHiddenDataFromBufferWindow = true
 
     async function getDataInBuffer() {
         loadGetData = true
@@ -17,13 +19,18 @@
         loadGetData = false
     }
 
-    async function setDataFromBuffer() {
+    async function setDataFromBuffer(code) {
         loadSetData = true
         let data = await navigator.clipboard.readText()
         data = JSON.parse(data)
         await postFetch("/data", login, password, data)
         message = "Данные загружены из буфера обмена"
         loadSetData = false
+        isHiddenDataFromBufferWindow = true
+    }
+
+    function openSetDataFromBufferWindow() {
+        isHiddenDataFromBufferWindow = false
     }
 </script>
 <main>
@@ -59,7 +66,9 @@
                 <p>2) Нажмите кнопку "Загрузить" на целевом сервере.</p>
                 <p>{message}</p>
                 <CrabsButton bind:load={loadGetData} on:click={getDataInBuffer} text="Скачать"/>
-                <CrabsButton bind:load={loadSetData} on:click={setDataFromBuffer} text="Загрузить"/>
+                <CrabsButton bind:load={loadSetData} on:click={openSetDataFromBufferWindow} text="Загрузить"/>
+
+                <CrabsDialogYesNo text="Вы уверены?" bind:isHidden={isHiddenDataFromBufferWindow} itemCode={0} functionOnYes={setDataFromBuffer}/>
 
                 <h3 class="mt-5 mb-3">Конец</h3>
             </div>
