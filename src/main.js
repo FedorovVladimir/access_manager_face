@@ -30,6 +30,16 @@ export async function getFetch(url, login, password) {
     return await response.json();
 }
 
+export async function getFetchUrl(url, login, password) {
+    let response = await fetch(url, {
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Basic " + btoa(login + ":" + password)
+        }
+    });
+    return await response.json();
+}
+
 export async function postFetch(url, login, password, data) {
     let baseUrl = getBaseUrl()
     let b = JSON.stringify(data)

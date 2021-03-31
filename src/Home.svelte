@@ -1,30 +1,23 @@
 <script>
     import CrabsButton from "./components/CrabsButton.svelte";
-    import {getFetch, postFetch} from "./main";
+    import {getFetchUrl, postFetch} from "./main";
     import CrabsDialogYesNo from "./components/CrabsDialogYesNo.svelte";
+    import CrabsStar from "./components/CrabsStar.svelte";
 
     export let login;
     export let password;
 
-    let message = ""
-    let loadGetData = false
     let loadSetData = false
     let isHiddenDataFromBufferWindow = true
 
-    async function getDataInBuffer() {
-        loadGetData = true
-        let data = await getFetch("/data", login, password)
-        await navigator.clipboard.writeText(JSON.stringify(data))
-        message = "Данные скопированы в буфер обмена"
-        loadGetData = false
-    }
+    let url = ""
+    let l = ""
+    let p = ""
 
     async function setDataFromBuffer(code) {
         loadSetData = true
-        let data = await navigator.clipboard.readText()
-        data = JSON.parse(data)
+        let data = await getFetchUrl(url, l, p)
         await postFetch("/data", login, password, data)
-        message = "Данные загружены из буфера обмена"
         loadSetData = false
         isHiddenDataFromBufferWindow = true
     }
@@ -62,13 +55,24 @@
                 </p>
 
                 <h3 class="mt-5 mb-3">Синхронизация</h3>
-                <p>1) Нажмите кнопку "Скачать" на исходном сервере с эталонной схемой данных.</p>
-                <p>2) Нажмите кнопку "Загрузить" на целевом сервере.</p>
-                <p>{message}</p>
-                <CrabsButton bind:load={loadGetData} on:click={getDataInBuffer} text="Скачать"/>
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label" for="url">Url <CrabsStar/> (http://host:port/data)</label>
+                        <input bind:value={url} type="text" class="form-control" id="url" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="login">Login <CrabsStar/></label>
+                        <input bind:value={l} type="text" class="form-control" id="login" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="pass">Password <CrabsStar/></label>
+                        <input bind:value={p} type="password" class="form-control" id="pass" required>
+                    </div>
+                </form>
                 <CrabsButton bind:load={loadSetData} on:click={openSetDataFromBufferWindow} text="Загрузить"/>
 
-                <CrabsDialogYesNo text="Вы уверены?" bind:isHidden={isHiddenDataFromBufferWindow} itemCode={0} functionOnYes={setDataFromBuffer}/>
+                <CrabsDialogYesNo text="Вы уверены?" bind:isHidden={isHiddenDataFromBufferWindow} itemCode={0}
+                                  functionOnYes={setDataFromBuffer}/>
 
                 <h3 class="mt-5 mb-3">Конец</h3>
             </div>
