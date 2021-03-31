@@ -15,8 +15,8 @@ function trimPrefix(str, prefix) {
 }
 
 export async function getFetch(url, login, password) {
-    let baseUrl = "http://localhost:8080/" // dev
-    // let baseUrl = window.location.href // prod
+    // let baseUrl = "http://localhost:8080/" // dev
+    let baseUrl = window.location.href // prod
     let response = await fetch(baseUrl + trimPrefix(url, "/"), {
         headers: {
             "Content-Type": "application/json",
@@ -27,8 +27,8 @@ export async function getFetch(url, login, password) {
 }
 
 export async function postFetch(url, login, password, data) {
-    let baseUrl = "http://localhost:8080/"
-    // let baseUrl = window.location.href // prod
+    // let baseUrl = "http://localhost:8080/" // dev
+    let baseUrl = window.location.href // prod
     let b = JSON.stringify(data)
     let response = await fetch(baseUrl + trimPrefix(url, "/"), {
         method: 'POST',
@@ -42,8 +42,8 @@ export async function postFetch(url, login, password, data) {
 }
 
 export async function deleteFetch(url, login, password) {
-    let baseUrl = "http://localhost:8080/"
-    // let baseUrl = window.location.href // prod
+    // let baseUrl = "http://localhost:8080/" // dev
+    let baseUrl = window.location.href // prod
     let response = await fetch(baseUrl + trimPrefix(url, "/"), {
         method: 'DELETE',
         headers: {
