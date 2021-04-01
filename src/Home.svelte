@@ -1,6 +1,6 @@
 <script>
     import CrabsButton from "./components/CrabsButton.svelte";
-    import {getFetchUrl, postFetch} from "./main";
+    import {getFetch, getFetchUrl, postFetch} from "./main";
     import CrabsDialogYesNo from "./components/CrabsDialogYesNo.svelte";
     import CrabsStar from "./components/CrabsStar.svelte";
 
@@ -13,6 +13,10 @@
     let url = ""
     let l = ""
     let p = ""
+    let schema_1_load = false
+    let schema_1 = ""
+    let schema_2_load = false
+    let schema_2 = ""
 
     async function setDataFromBuffer(code) {
         loadSetData = true
@@ -20,6 +24,18 @@
         await postFetch("/data", login, password, data)
         loadSetData = false
         isHiddenDataFromBufferWindow = true
+    }
+
+    async function getSchema() {
+        schema_1_load = true
+        schema_1 = JSON.stringify(await getFetch("/data", login, password))
+        schema_1_load = false
+    }
+
+    async function setSchema() {
+        schema_2_load = true
+        await postFetch("/data", login, password, JSON.parse(schema_2))
+        schema_2_load = false
     }
 
     function openSetDataFromBufferWindow() {
@@ -55,17 +71,44 @@
                 </p>
 
                 <h3 class="mt-5 mb-3">Синхронизация</h3>
+
+                <h5 class="mt-5 mb-3">Скачать схему</h5>
                 <form>
                     <div class="mb-3">
-                        <label class="form-label" for="url">Url <CrabsStar/> (http://host:port/data)</label>
+                        <label class="form-label" for="scheme_1">Схема</label>
+                        <textarea id="scheme_1" bind:value={schema_1} class="form-control" readonly></textarea>
+                    </div>
+                </form>
+                <CrabsButton bind:load={schema_1_load} on:click={getSchema} text="Скачать схему"/>
+
+                <h5 class="mt-5 mb-3">Загрузить схему</h5>
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label" for="scheme_2">Схема</label>
+                        <textarea id="scheme_2" bind:value={schema_2} class="form-control"></textarea>
+                    </div>
+                </form>
+                <CrabsButton bind:load={schema_2_load} on:click={setSchema} text="Загрузить схему"/>
+
+                <h5 class="mt-5 mb-3">С удаленного сервера</h5>
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label" for="url">Url
+                            <CrabsStar/>
+                            (http://host:port/data)
+                        </label>
                         <input bind:value={url} type="text" class="form-control" id="url" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="login">Login <CrabsStar/></label>
+                        <label class="form-label" for="login">Login
+                            <CrabsStar/>
+                        </label>
                         <input bind:value={l} type="text" class="form-control" id="login" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="pass">Password <CrabsStar/></label>
+                        <label class="form-label" for="pass">Password
+                            <CrabsStar/>
+                        </label>
                         <input bind:value={p} type="password" class="form-control" id="pass" required>
                     </div>
                 </form>
